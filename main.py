@@ -26,11 +26,20 @@ class App:
 
 
     def open_photo(self):
-        """File open funciton."""
+        """Image open funciton."""
+       
+        # get image path
         img_path = filedialog.askopenfilename()
-        img_pil = Image.open(img_path).resize((200, 200))
-        self.img_tk = ImageTk.PhotoImage(img_pil)
-        self.canvas.itemconfig(self.image_container, image=self.img_tk)
+       
+        # Get image, image size
+        img_pil = Image.open(img_path)
+        img_width = img_pil.size[0]
+        img_height = img_pil.size[1]
+       
+        # Display image
+        self.img_bg = ImageTk.PhotoImage(img_pil)
+        self.canvas.configure(width=img_width, height=img_height)
+        self.canvas.itemconfig(self.image_container, image=self.img_bg)
 
 
 window = Tk()
