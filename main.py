@@ -2,7 +2,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk, ImageDraw
 
 
 class App:
@@ -24,6 +24,7 @@ class App:
         # Setup variables
         self.img_width = 100
         self.img_height = 100
+        self.final_img = Image.new("RGB", (self.img_width, self.img_height), (255, 255, 255, 0))
 
         # Open Photo button
         Button(text="Open Photo", command=self.open_img).grid(column=1, row=2, columnspan=2, sticky="nesw")
@@ -33,6 +34,9 @@ class App:
 
         # Add Logo button
         Button(text="Add Logo", command=self.logo_dialog).grid(column=2, row=3, sticky="nesw")
+
+        # Open Save button
+        Button(text="Save Photo", command=self.save_img).grid(column=1, row=4, columnspan=2, sticky="nesw")
 
 
     def open_img(self):
@@ -51,6 +55,8 @@ class App:
        
         # Display image
         self.img_bg = ImageTk.PhotoImage(img_pil)
+        self.final_img = img_pil
+        # self.final_img.show()
         self.canvas.configure(width=self.img_width, height=self.img_height)
         self.canvas.itemconfig(self.image_container, image=self.img_bg, anchor="nw")
 
@@ -62,6 +68,13 @@ class App:
         def add_text():
             """Put text to the image"""
             user_input = text_box.get(1.0, "end-1c")
+            
+            # txt = Image.new("RGBA", (self.img_width, self.img_height), (255, 255, 255, 0))
+            # draw = ImageDraw.Draw(txt)
+            # draw.text((self.img_width/2, self.img_height/2), text=user_input, font=("Ariel", 40, "bold"))
+            # out = Image.self.final_img(self.final_img, txt)
+            # out.show()
+
             watermark_text = self.canvas.create_text(self.img_width/2, self.img_height/2, text=user_input, font=("Ariel", 40, "bold"), anchor="nw")
 
         text_menu = Toplevel(window)
@@ -102,7 +115,7 @@ class App:
         Button(logo_frame, text="Open Logo", command=self.open_logo).grid(column=2, row=2, sticky="nesw")
 
         # Add logo button
-        Button(logo_frame, text="Add Logo").grid(column=3, row=2, sticky="nesw")
+        Button(logo_frame, text="Add Logo", command=self.add_logo).grid(column=3, row=2, sticky="nesw")
 
         # Cancel button
         Button(logo_frame, text="Cancel", command=logo_menu.destroy).grid(column=2, row=3, columnspan=2, sticky="nesw")
@@ -110,25 +123,31 @@ class App:
 
     def open_logo(self):
         """Image open funciton"""
-
-
-        def add_logo():
-            """Put logo to the image"""
-            watermark_logo = self.canvas.create_image(0, 0, image=self.logo_bg, anchor="nw")
     
         # get image path
         logo_path = filedialog.askopenfilename(initialdir="img/logo_collection")
     
         # Get image, image size
-        logo_pil = Image.open(logo_path)
-        self.logo_width = logo_pil.size[0]
-        self.logo_height = logo_pil.size[1]
+        self.logo_pil = Image.open(logo_path)
+        self.logo_width = self.logo_pil.size[0]
+        self.logo_height = self.logo_pil.size[1]
     
         # Display image
-        self.logo_bg = ImageTk.PhotoImage(logo_pil)
+        self.logo_bg = ImageTk.PhotoImage(self.logo_pil)
         self.canvas_logo.configure(width=self.logo_width, height=self.logo_height)
         self.logo_container = self.canvas_logo.create_image(0, 0, image=self.logo_bg, anchor="nw")
+
+
+    def add_logo(self):
+        """Put logo to the image"""
         
+        watermark_logo = self.canvas.create_image(0, 0, image=self.logo_bg, anchor="nw")
+    
+
+    def save_img(self):
+        """Save image"""
+
+        pass
 
 window = Tk()
 app = App(window)
